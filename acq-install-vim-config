@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+source=/usr/local/share/acq-vim
+target=${1:-/home/agent}
+
+test -r "$source/.vimrc"
+test -r "$source/.plugins.vimrc"
+test -d "$source/.vim"
+
+install -d -m 0755 "$target" "$target/.config"
+install -m 0644 "$source/.vimrc" "$target/.vimrc"
+install -m 0644 "$source/.plugins.vimrc" "$target/.plugins.vimrc"
+rm -rf "$target/.vim" "$target/.config/coc"
+cp -a "$source/.vim" "$target/.vim"
+
+if [ -d "$source/.config/coc" ]; then
+  cp -a "$source/.config/coc" "$target/.config/coc"
+fi
+
+chown -R agent:agent "$target/.vimrc" "$target/.plugins.vimrc" "$target/.vim"
+
+if [ -d "$target/.config/coc" ]; then
+  chown -R agent:agent "$target/.config/coc"
+fi
