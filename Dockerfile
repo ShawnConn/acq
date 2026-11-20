@@ -38,7 +38,9 @@ RUN set -eux; \
       -c "execute 'CocInstall -sync ' . join(g:coc_global_extensions)" \
       -c 'qa!' \
       || { status=$?; cat "$HOME/coc-install.log"; exit "$status"; }; \
-    test -f "$HOME/.config/coc/extensions/node_modules/coc-vimlsp/package.json"
+    vim -Es -u "$HOME/.vimrc" \
+      -c "for extension in g:coc_global_extensions | if !filereadable(expand('~/.config/coc/extensions/node_modules/' . extension . '/package.json')) | echoerr 'Missing pre-baked CoC extension: ' . extension | cquit 1 | endif | endfor" \
+      -c 'qa!'
 
 USER root
 COPY acq-install-vim-config /usr/local/bin/acq-install-vim-config
