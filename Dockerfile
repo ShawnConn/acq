@@ -2,6 +2,9 @@ FROM docker.io/docker/sandbox-templates:opencode-docker
 
 USER root
 
+# The sandbox mounts its public CA bundle under /.msb with dialout group access.
+RUN usermod -aG dialout agent
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends vim git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
